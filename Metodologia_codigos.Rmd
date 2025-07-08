@@ -1,0 +1,200 @@
+```{r}
+# Guardar la URL
+url <- "https://github.com/Patty3108/trabajo-final/raw/refs/heads/main/Seguimiento%20-%20Seguimiento.csv"
+
+library(readr)
+tablero <- read_csv(url)
+
+head(tablero)  # Para ver la tabla
+
+colSums(is.na(tablero))
+tablero <- tablero[, -1]  # Quita la primera columna
+tablero <- tablero[-1, ]
+
+# Renombrar columnas (ajusta según cuántas tengas)
+names(tablero) <- c("uso de métodos anticonceptivos", "recibio seguimiento", "no recibio seguimiento")
+
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+
+# Supongamos que tu tabla se llama 'tablero'
+# Primero convertimos los valores de texto a números
+tablero_long <- tablero %>%
+  pivot_longer(cols = c("recibio seguimiento", "no recibio seguimiento"),
+               names_to = "seguimiento",
+               values_to = "cantidad") %>%
+  mutate(cantidad = as.numeric(cantidad))  # Convertir texto a número
+
+# Ahora hacemos el gráfico de barras agrupadas
+ggplot(tablero_long, aes(x = `uso de métodos anticonceptivos`, 
+                         y = cantidad, fill = seguimiento)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Uso de métodos anticonceptivos según seguimiento recibido",
+       x = "Uso de métodos anticonceptivos",
+       y = "Cantidad de personas",
+       fill = "Seguimiento") +
+  theme_minimal()
+# Crear tabla de frecuencias
+tabla_chi <- matrix(c(56, 1, 1, 4), 
+                    nrow = 2, byrow = TRUE)
+
+# Asignar nombres
+rownames(tabla_chi) <- c("Utilizan M.A.", "No utilizan M.A.")
+colnames(tabla_chi) <- c("Recibió seguimiento", "No recibió seguimiento")
+
+# Ver la tabla
+tabla_chi
+
+fisher.test(tabla_chi)
+```
+
+```{r}
+# Guardar la URL
+url <- "https://github.com/Patty3108/trabajo-final/raw/refs/heads/main/Accesibilidad%20-%20Accesibilidad.csv"
+
+library(readr)
+accesus <- read_csv(url)
+
+
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+
+# Supongamos que tu tabla se llama 'tablero'
+# Primero convertimos los valores de texto a números
+accesus_long <- accesus %>%
+  pivot_longer(cols = c("Accesible", "No accesible"),
+               names_to = "accesibilidad",
+               values_to = "cantidad") %>%
+  mutate(cantidad = as.numeric(cantidad))  # Convertir texto a número
+
+# Ahora hacemos el gráfico de barras agrupadas
+ggplot(accesus_long, aes(x = `uso de metod`, 
+                        y = cantidad, fill = accesibilidad)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Uso de métodos anticonceptivos según la accesibilidad",
+       x = "Uso de métodos anticonceptivos",
+       y = "Cantidad de personas",
+       fill = "accesibilidad") +
+
+scale_fill_manual(
+  values = c("Accesible" = "#800080",    # morado
+             "No accesible" = "#808080") # plomo
+) +
+  theme_minimal()
+# Crear tabla de frecuencias
+tabla_fish <- matrix(c(49, 8, 4, 1), 
+                    nrow = 2, byrow = TRUE)
+
+# Asignar nombres
+rownames(tabla_fish) <- c("Utilizan M.A.", "No utilizan M.A.")
+colnames(tabla_fish) <- c("Accesible", "No accesible")
+
+# Ver la tabla
+tabla_fish
+
+fisher.test(tabla_fish)
+```
+
+```{r}
+# Guardar la URL
+url <- "https://github.com/Patty3108/trabajo-final/raw/refs/heads/main/Informacion%20%20-%20Informaci%C3%B3n.csv"
+
+library(readr)
+info <- read_csv(url)
+head(info)  # Para ver la tabla
+
+
+colSums(is.na(info))
+info <- info[, -1]  # Quita la primera columna
+info<- info[-1, ]
+
+# Renombrar columnas (ajusta según cuántas tengas)
+names(info) <- c("uso de métodos anticonceptivos", "recibio información completa", "no recibio información completa")
+
+# Supongamos que tabla_ma es un data.frame o tibble ya cargado
+
+# Convertir los datos a numéricos si están como texto
+tabla_matriz <- matrix(
+  as.numeric(unlist(info[, 2:3])),
+  nrow = 2,
+  byrow = FALSE,
+  dimnames = list(
+    "Uso de métodos anticonceptivos" = info[[1]],
+    "Información recibida" = c("Recibió información completa", "No recibió información completa")
+  )
+)
+
+# Instalar y cargar paquete si es necesario
+install.packages("vcd")  # solo si no lo tienes
+library(vcd)
+
+# Crear el gráfico
+mosaic(tabla_matriz,
+       shade = TRUE,
+       legend = FALSE,
+       labeling_args = list(
+         set_varnames = c("Uso de métodos anticonceptivos", "Información recibida")
+       ),
+       main = "Uso de Métodos Anticonceptivos según Información Recibida")
+
+# Crear tabla de frecuencias
+tabla_fi<- matrix(c(47, 10, 1, 4), 
+                    nrow = 2, byrow = TRUE)
+
+# Asignar nombres
+rownames(tabla_fi) <- c("Utilizan M.A.", "No utilizan M.A.")
+colnames(tabla_fi) <- c("recibió información completa", "no recibió información completa")
+
+# Ver la tabla
+tabla_fi
+
+fisher.test(tabla_fi)
+```
+
+```{r}
+# Guardar la URL
+url <- "https://github.com/Patty3108/trabajo-final/raw/refs/heads/main/atenci%C3%B3n%20%20-%20Atenci%C3%B3n%20personalizada.csv"
+
+library(readr)
+aten <- read_csv(url)
+# Renombrar columnas (ajusta según cuántas tengas)
+names(aten) <- c("uso de métodos anticonceptivos", "Atención personalizada", "Sin atención personalizada")
+
+head(aten)  # Para ver la tabla
+library(tidyr)
+library(ggplot2)
+# 1. Convertir a formato largo
+aten_long <- pivot_longer(aten, 
+                          cols = c(`Atención personalizada`, `Sin atención personalizada`), 
+                          names_to = "Atención recibida", 
+                          values_to = "Cantidad")
+
+# 2. Graficar
+ggplot(aten_long, aes(x = `uso de métodos anticonceptivos`, 
+                      y = Cantidad, fill = `Atención recibida`)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_fill_manual(values = c("Atención personalizada" = "#FF69B4",   # rosado
+                               "Sin atención personalizada" = "#FF0000" # rojo
+  )) +
+  labs(title = "Uso de M.A. según tipo de atención",
+       x = "Uso de métodos anticonceptivos",
+       y = "Cantidad de personas",
+       fill = "Atención recibida") +
+  theme_minimal()
+
+# Crear tabla de frecuencias
+tabla_fisher <- matrix(c(55, 2, 1, 4), 
+                    nrow = 2, byrow = TRUE)
+
+# Asignar nombres
+rownames(tabla_fisher) <- c("Utilizan M.A.", "No utilizan M.A.")
+colnames(tabla_fisher) <- c("Recibió seguimiento", "No recibió seguimiento")
+
+# Ver la tabla
+tabla_fisher
+
+fisher.test(tabla_fisher)
+```
+
